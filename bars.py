@@ -60,13 +60,13 @@ if __name__ == '__main__':
     biggest_bars = get_biggest_bars(bars_data)
     smallest_bars = get_smallest_bars(bars_data)
     for bar in biggest_bars:
-        print_bar_info('самый большой бар', bar)
+        print_bar_info('Самый большой бар', bar)
     for bar in smallest_bars:
-        print_bar_info('самый маленький бар', bar)
+        print_bar_info('Самый маленький бар', bar)
     print('А теперь давай узнаем, какой бар ближе. Введи свои координаты.')
     user_latitude = coordinates_input(
             'Узнай в гугле, на какой широте ты находишься:')
     user_longitude = coordinates_input(
             'Отлично, теперь узнай в гугле, на какой долготе ты находишься:')
     nearest_bar = get_closest_bar(bars_data, user_longitude, user_latitude)
-    print_bar_info('ближайший бар', bar)
+    print_bar_info('Ближайший бар', nearest_bar)
