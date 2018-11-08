@@ -1,18 +1,25 @@
 import json
 import sys
+import os
 
 
 def print_error(error):
     errors_dict = {
         'no_param': 'Ты не указал файл с данными при запуске программы.',
-        'no_file': 'Файл не найден, напиши правильный путь к файлу.',
-        'no_json': 'Файл не содержит JSON, напиши правильный путь к файлу.',
+        'no_file': 'C файлом что-то не так, напиши правильный путь к файлу.',
+        'no_data': 'С данными что-то не так, напиши путь к правильному файлу.',
         'not_number': 'Не балуйся, введи координаты в числовом виде!',
-        'not_utf': 'Файл должен быть в utf-8!'
     }
     print(errors_dict[error])
     print('Программа автоматически завершит работу.')
 
+
+def load_bars_data(filepath):
+    with open(filepath, encoding='utf-8') as data_file:
+        try:
+            return json.loads(data_file.read())
+        except json.decoder.JSONDecodeError:
+    	    return None
 
 def get_biggest_bars(bars_data):
     biggest_bars = []
@@ -46,19 +53,17 @@ def print_bar_info(description, bar_data):
 
 if __name__ == '__main__':
     try:
-        with open(sys.argv[1], encoding='utf-8') as data_file:
-            bars_data = json.loads(data_file.read())
+        bars_data_file = sys.argv[1]
     except IndexError:
         print_error('no_param')
         sys.exit()
-    except FileNotFoundError:
+    if not os.path.exists(bars_data_file):
         print_error('no_file')
         sys.exit()
-    except json.decoder.JSONDecodeError:
-        print_error('no_json')
-        sys.exit()
-    except UnicodeDecodeError:
-        print_error('not_utf')
+
+    bars_data = load_bars_data(bars_data_file)
+    if bars_data is None:
+        print_error('no_data')
         sys.exit()
 
     biggest_bars = get_biggest_bars(bars_data)
