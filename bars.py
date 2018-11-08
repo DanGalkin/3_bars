@@ -2,26 +2,37 @@ import json
 import sys
 
 
+def close_on_error(error):
+    errors_dict = {
+        'no_param': 'Ты не указал файл с данными при запуске программы.',
+        'no_file': 'Файл не найден, напиши правильный путь к файлу.',
+        'no_json': 'Файл не содержит JSON, напиши правильный путь к файлу.',
+        'not_number': 'Не балуйся, введи координаты в числовом виде!',
+        'not_utf': 'Файл должен быть в utf-8!'
+    }
+    print(errors_dict[error])
+    print('Программа автоматически завершит работу.')
+    sys.exit()
+
+
 def load_bars_data(bars_data_filepath):
     data_filepath = bars_data_filepath
-    while True:
-        try:
-            with open(data_filepath, encoding='utf-8') as data_file:
-                return json.loads(data_file.read())
-        except FileNotFoundError:
-            data_filepath = input(
-                    'Файл не найден, напиши правильный путь к файлу:')
-        except json.decoder.JSONDecodeError:
-            data_filepath = input(
-                    'Файл не содержит JSON, напиши правильный путь к файлу:')
+    try:
+        with open(data_filepath, encoding='utf-8') as data_file:
+            return json.loads(data_file.read())
+    except FileNotFoundError:
+        close_on_error('no_file')
+    except json.decoder.JSONDecodeError:
+        close_on_error('no_json')
+    except UnicodeDecodeError:
+        close_on_error('not_utf')
 
 
 def coordinates_input(input_question):
-    while True:
-        try:
-            return float(input(input_question))
-        except ValueError:
-            print('Не балуйся, введи координаты в числовом виде!')
+    try:
+        return float(input(input_question))
+    except ValueError:
+        close_on_error('not_number')
 
 
 def get_biggest_bars(bars_data):
@@ -55,7 +66,10 @@ def print_bar_info(description, bar_data):
 
 
 if __name__ == '__main__':
-    bars_data_filepath = sys.argv[1]
+    try:
+        bars_data_filepath = sys.argv[1]
+    except IndexError:
+        close_on_error('no_param')
     bars_data = load_bars_data(bars_data_filepath)
     biggest_bars = get_biggest_bars(bars_data)
     smallest_bars = get_smallest_bars(bars_data)
