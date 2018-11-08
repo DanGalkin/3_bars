@@ -2,7 +2,7 @@ import json
 import sys
 
 
-def close_on_error(error):
+def print_error(error):
     errors_dict = {
         'no_param': 'Ты не указал файл с данными при запуске программы.',
         'no_file': 'Файл не найден, напиши правильный путь к файлу.',
@@ -12,27 +12,6 @@ def close_on_error(error):
     }
     print(errors_dict[error])
     print('Программа автоматически завершит работу.')
-    sys.exit()
-
-
-def load_bars_data(bars_data_filepath):
-    data_filepath = bars_data_filepath
-    try:
-        with open(data_filepath, encoding='utf-8') as data_file:
-            return json.loads(data_file.read())
-    except FileNotFoundError:
-        close_on_error('no_file')
-    except json.decoder.JSONDecodeError:
-        close_on_error('no_json')
-    except UnicodeDecodeError:
-        close_on_error('not_utf')
-
-
-def coordinates_input(input_question):
-    try:
-        return float(input(input_question))
-    except ValueError:
-        close_on_error('not_number')
 
 
 def get_biggest_bars(bars_data):
@@ -67,20 +46,40 @@ def print_bar_info(description, bar_data):
 
 if __name__ == '__main__':
     try:
-        bars_data_filepath = sys.argv[1]
+        with open(sys.argv[1], encoding='utf-8') as data_file:
+            bars_data = json.loads(data_file.read())
     except IndexError:
-        close_on_error('no_param')
-    bars_data = load_bars_data(bars_data_filepath)
+        print_error('no_param')
+        sys.exit()
+    except FileNotFoundError:
+        print_error('no_file')
+        sys.exit()
+    except json.decoder.JSONDecodeError:
+        print_error('no_json')
+        sys.exit()
+    except UnicodeDecodeError:
+        print_error('not_utf')
+        sys.exit()
+
     biggest_bars = get_biggest_bars(bars_data)
     smallest_bars = get_smallest_bars(bars_data)
     for bar in biggest_bars:
         print_bar_info('Самый большой бар', bar)
     for bar in smallest_bars:
         print_bar_info('Самый маленький бар', bar)
+
     print('А теперь давай узнаем, какой бар ближе. Введи свои координаты.')
-    user_latitude = coordinates_input(
-            'Узнай в гугле, на какой широте ты находишься:')
-    user_longitude = coordinates_input(
-            'Отлично, теперь узнай в гугле, на какой долготе ты находишься:')
+    try:
+        user_latitude = float(input(
+            'Узнай в гугле, на какой широте ты находишься:'))
+    except ValueError:
+        print_error('not_number')
+        sys.exit()
+    try:
+        user_longitude = float(input(
+            'Отлично, теперь узнай в гугле, на какой долготе ты находишься:'))
+    except ValueError:
+        print_error('not_number')
+        sys.exit()
     nearest_bar = get_closest_bar(bars_data, user_longitude, user_latitude)
     print_bar_info('Ближайший бар', nearest_bar)
