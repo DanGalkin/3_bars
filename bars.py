@@ -1,7 +1,5 @@
 import json
 import sys
-import os
-
 
 def print_error(error):
     errors_dict = {
