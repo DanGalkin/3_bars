@@ -64,14 +64,12 @@ if __name__ == '__main__':
     except json.decoder.JSONDecodeError:
         print_error('no_json')
         sys.exit()
-
     biggest_bars = get_biggest_bars(bars_data)
     smallest_bars = get_smallest_bars(bars_data)
     for bar in biggest_bars:
         print_bar_info('Самый большой бар', bar)
     for bar in smallest_bars:
         print_bar_info('Самый маленький бар', bar)
-
     print('А теперь давай узнаем, какой бар ближе. Введи свои координаты.')
     try:
         user_latitude = float(input('Узнай в гугле, на какой '
@@ -81,6 +79,5 @@ if __name__ == '__main__':
     except ValueError:
         print_error('not_number')
         sys.exit()
-
     nearest_bar = get_closest_bar(bars_data, user_longitude, user_latitude)
     print_bar_info('Ближайший бар', nearest_bar)
