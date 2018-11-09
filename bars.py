@@ -7,7 +7,7 @@ def print_error(error):
     errors_dict = {
         'no_param': 'Ты не указал файл с данными при запуске программы.',
         'no_file': 'Такого файла нет, напиши правильный путь к файлу.',
-        'no_json': 'В файле с данными отсутствует json, напиши путь к правильному файлу.',
+        'no_json': 'В файле нет json, напиши путь к правильному файлу.',
         'not_number': 'Не балуйся, введи координаты в числовом виде!',
         'not_utf': 'Файл с данными не в utf, напиши путь к правильному файлу'
     }
@@ -18,6 +18,7 @@ def print_error(error):
 def load_bars_data(filepath):
     with open(filepath, encoding='utf-8') as data_file:
         return json.loads(data_file.read())
+
 
 def get_biggest_bars(bars_data):
     biggest_bars = []
@@ -52,15 +53,13 @@ def print_bar_info(description, bar_data):
 if __name__ == '__main__':
     try:
         bars_data_file = sys.argv[1]
+        bars_data = load_bars_data(bars_data_file)
     except IndexError:
         print_error('no_param')
         sys.exit()
-    if not os.path.exists(bars_data_file):
+    except FileNotFoundError:
         print_error('no_file')
         sys.exit()
-
-    try:
-        bars_data = load_bars_data(bars_data_file)
     except UnicodeEncodeError:
         print_error('no_utf')
         sys.exit()
@@ -78,15 +77,12 @@ if __name__ == '__main__':
     print('А теперь давай узнаем, какой бар ближе. Введи свои координаты.')
     try:
         user_latitude = float(input(
-            'Узнай в гугле, на какой широте ты находишься:'))
-    except ValueError:
-        print_error('not_number')
-        sys.exit()
-    try:
+          'Узнай в гугле, на какой широте ты находишься:'))
         user_longitude = float(input(
-            'Отлично, теперь узнай в гугле, на какой долготе ты находишься:'))
+          'Так, теперь узнай в гугле, на какой долготе ты находишься:'))
     except ValueError:
         print_error('not_number')
         sys.exit()
+
     nearest_bar = get_closest_bar(bars_data, user_longitude, user_latitude)
     print_bar_info('Ближайший бар', nearest_bar)
