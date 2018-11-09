@@ -46,8 +46,8 @@ def get_closest_bar(bars_data, user_longitude, user_latitude):
 
 def print_bar_info(description, bar_data):
     print('{}: {}, посадочных мест:{}, находится по адресу: {}'.format(
-           description, bar_data['Name'], bar_data['SeatsCount'],
-           bar_data['Address']))
+          description, bar_data['Name'], bar_data['SeatsCount'],
+          bar_data['Address']))
 
 
 if __name__ == '__main__':
@@ -76,10 +76,10 @@ if __name__ == '__main__':
 
     print('А теперь давай узнаем, какой бар ближе. Введи свои координаты.')
     try:
-        user_latitude = float(input(
-          'Узнай в гугле, на какой широте ты находишься:'))
-        user_longitude = float(input(
-          'Так, теперь узнай в гугле, на какой долготе ты находишься:'))
+        user_latitude = float(input('Узнай в гугле, на какой '
+                                    'широте ты находишься:'))
+        user_longitude = float(input('Так, теперь узнай в гугле, на какой '
+                                     'долготе ты находишься:'))
     except ValueError:
         print_error('not_number')
         sys.exit()
